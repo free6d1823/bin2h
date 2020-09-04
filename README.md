@@ -1,4 +1,4 @@
-# objtoh
+# bintoh
 
 convert binary file to C header file
 
@@ -10,5 +10,7 @@ To build this project: Use make
 
 To run it: see ./hex2h -h
 example:
-  $ ./hex2h sample.yuv -f source.h -v data
+  $ ./hex2h sample.yuv -f source.h -v data -c 10
 
+History:
+20200904 add -c option for select data columns.

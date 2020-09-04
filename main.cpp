@@ -7,12 +7,14 @@
 #include <unistd.h>
 
 using namespace std;
+static int bytes_per_row = 10;
 void usage(char* name)
 {
-    printf("Usage: %s <input_file> [-f <output_h>] [-v <var_name>]\n", name);
+    printf("Usage: %s <input_file> [-f <output_h>] [-c <columns>] [-v <var_name>]\n", name);
     printf("Convert a binary file to header file.\n\n");
     printf("\tinput_file       input binary filename.\n");
     printf("\t-f <output_h>    output header filename.\n");
+    printf("\t-c <columns>     displayed data per row. Default 10.\n");
     printf("\t-v <var_name>    declared variable name.\n");
 }
 void printHeader(FILE* fp, char* name, char* sourceName)
@@ -38,11 +40,11 @@ int printData(FILE* fpIn, FILE* fpOut)
 	unsigned char data;
 	int length = 0;
 	while( 1 == fread(&data, 1,1, fpIn)) {
-		if (length%10 == 0)
+		if (length% bytes_per_row == 0)
 			fprintf(fpOut, "\t");
 		fprintf(fpOut, "0x%02X,", data);
 		length++;
-		if (length%10 == 0)
+		if (length% bytes_per_row == 0)
 			fprintf(fpOut, "\n");
 
 	}
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
 	char szName[64] = "bitstream";
 	char ch;
 
-	while ((ch = getopt(argc, argv, "f:v:h?")) != -1)
+	while ((ch = getopt(argc, argv, "c:f:v:h?")) != -1)
 	{
 		switch (ch)
 		{
@@ -73,6 +75,9 @@ int main(int argc, char *argv[])
 		    break;
 		case 'v':
 		    strncpy((char*)szName, optarg, 63);
+		    break;
+		case 'c':
+		    bytes_per_row = atoi(optarg);
 		    break;
 		default:
 		    usage(argv[0]);
